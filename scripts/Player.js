@@ -1,8 +1,8 @@
 function Player(){
     this.timer = 0;
     this.interval = null;
-    this.xpos = initposx;
-    this.ypos = initposy;
+    this.xpos = null;
+    this.ypos = null;
     this.isMoving = false;
     this.movingRight = true;
     this.isChangingDirection = false;
@@ -16,7 +16,7 @@ function Player(){
             imtop = 0 + px
             this.xpos+=4;
             document.getElementById("player").style.background = this.path+ imleft + " " + imtop
-            document.getElementById("player").style.left = this.xpos+px;
+            document.getElementById("player").style.left = this.xpos+pixelSize/2+px;
             this.imageInterval++;
             if (this.imageInterval >= 8){
                 this.imageInterval = 0
@@ -29,7 +29,7 @@ function Player(){
             imtop = -pixelSize+px
             this.xpos-=4;
             document.getElementById("player").style.background = this.path+ imleft + " " + imtop
-            document.getElementById("player").style.left = this.xpos+px;
+            document.getElementById("player").style.left = this.xpos+pixelSize/2+px;
             this.imageInterval++;
             if (this.imageInterval >= 8){
                 this.imageInterval = 0
@@ -44,7 +44,7 @@ function Player(){
             imleft = -pixelSize*this.imageInterval+px
             imtop = -pixelSize*2+px
             document.getElementById("player").style.background = this.path+ imleft + " " + imtop
-            document.getElementById("player").style.left = this.xpos+px;
+            document.getElementById("player").style.left = this.xpos+pixelSize/2+px;
             this.imageInterval++;
             if (this.imageInterval >= 8){
                 this.imageInterval = 0
@@ -56,7 +56,7 @@ function Player(){
             imleft = -pixelSize*this.imageInterval+px
             imtop = -pixelSize*3+px
             document.getElementById("player").style.background = this.path+ imleft + " " + imtop
-            document.getElementById("player").style.left = this.xpos+px;
+            document.getElementById("player").style.left = this.xpos+pixelSize/2+px;
             this.imageInterval++;
             if (this.imageInterval >= 8){
                 this.imageInterval = 0
@@ -104,6 +104,22 @@ function Player(){
             self.Enter();
         },1000/fps)
     };
+    this.initialize = function(xpos,ypos){
+        this.xpos = xpos;
+        this.ypos = ypos;
+        player = document.createElement("div")
+        player.id = "player"
+        document.getElementById("layer2").appendChild(player)
+        document.getElementById("player").className = 'Player';
+        document.getElementById("player").style.position = 'absolute';
+        document.getElementById("player").style.left = this.xpos+pixelSize/2+px;
+        document.getElementById("player").style.bottom = this.ypos-pixelSize/2+px;
+        document.getElementById("player").style.width = pixelSize+px;
+        document.getElementById("player").style.height = pixelSize+px;
+        document.getElementById("player").style.background = "url('assets/unicorn4.png')";
+    }
+
+    this.initialize(32*2,32*4+pixelSize/2)
 }
 
 /*

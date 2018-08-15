@@ -1,6 +1,14 @@
 FPS = 24;
 var house1 = new House();
+textmanager = new TextManager()
 var Player = new Player();
+str = "I am a normal pony. Please play with me. Come out.\nI will not hurt you... much"
+
+if (textmanager.isReady){
+    textmanager.read(str,Player.xpos,Player.ypos)
+}
+
+
 function Game(){
     getInput()
     update()
@@ -8,6 +16,7 @@ function Game(){
 }
 
 function update() {
+    textmanager.updatePosition(Player.xpos,Player.ypos);
     if (Player.enteringHouse){
         if(house1.checkInFrontDoor(Player.xpos+pixelSize)){
             Player.setEnter(2);

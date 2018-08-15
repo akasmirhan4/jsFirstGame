@@ -15,11 +15,27 @@ document.getElementById("world").style.height = "100%";
 document.getElementById("world").style.width = "100%";
 document.getElementById("world").style.backgroundColor = "#484e4c";
 
+//set layers
+layer = document.createElement("div");
+layer.id = "layer0";
+document.getElementById("world").appendChild(layer);
+
+layer = document.createElement("div");
+layer.id = "layer1";
+document.getElementById("world").appendChild(layer);
+
+layer = document.createElement("div");
+layer.id = "layer2";
+document.getElementById("world").appendChild(layer);
+
+layer = document.createElement("div");
+layer.id = "layer3";
+document.getElementById("world").appendChild(layer);
 
 //create ground
 ground = document.createElement("div");
 ground.id = "ground";
-document.getElementById("world").appendChild(ground);
+document.getElementById("layer0").appendChild(ground);
 document.getElementById("ground").classList.add("World");
 
 //Create the ground tile
@@ -44,3 +60,4 @@ for (x = 0; x < window.innerWidth; x += pixelSize) {
     tile.style.background = "url('assets/tileset4.png')" + (-pixelSize) + px + " " + 0 + px;
     document.getElementById("ground").appendChild(tile)
 }
+

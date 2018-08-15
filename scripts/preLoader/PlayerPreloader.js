@@ -1,5 +1,5 @@
 //global parameters-------------------------------------------
-initposx = pixelSize;
+/* initposx = pixelSize;
 initposy = pixelSize;
 //------------------------------------------------------------
 
@@ -18,3 +18,4 @@ document.getElementById("player").style.bottom = initposy+px;
 document.getElementById("player").style.width = pixelSize+px;
 document.getElementById("player").style.height = pixelSize+px;
 document.getElementById("player").style.background = "url('assets/unicorn4.png')";
+ */

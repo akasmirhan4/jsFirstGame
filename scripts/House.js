@@ -29,7 +29,7 @@ function House() {
     this.Initialize = function () {
         house = document.createElement("div")
         house.id = "house"
-        document.getElementById("world").appendChild(house)
+        document.getElementById("layer0").appendChild(house)
         house.style.position = "absolute";
         house.style.left = this.xpos - pixelSize * 1.5 + "px";
         house.style.bottom = this.ypos + px;

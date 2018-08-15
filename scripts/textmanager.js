@@ -3,9 +3,10 @@ function TextManager() {
     this.path = "url('assets/font.png') "
     this.textboxpath = "url('assets/textbox4_12_3.png')"
     this.textIndex = 0;
+    this.isReady = true;
     this.lineSpacing = 5
     this.lineCounter = 0
-    this.textoffsetX = 5
+    this.textoffsetX = 0
     this.textoffsetY = 5
     this.positionLeft = 0
     this.positionBottom = 0
@@ -29,8 +30,8 @@ function TextManager() {
         textboxElement.style.bottom = this.positionBottom + px;
         textboxElement.style.width = this.textboxWidth + px;
         textboxElement.style.height = this.textboxHeight + px;
-        textboxElement.style.background = this.textboxpath;
-        document.body.appendChild(textboxElement);
+/*         textboxElement.style.background = this.textboxpath;*/
+        document.getElementById("layer1").appendChild(textboxElement);
     }
     this.write = function () {
         var im_x, im_y
@@ -221,6 +222,10 @@ function TextManager() {
                     this.textIndex = 0;
                     this.lineCounter++;
                 }
+                else if (this.textIndex+1 >= this.textboxMaxWidth) {
+                    this.textIndex = 0;
+                    this.lineCounter++;
+                }
                 return;
             case "\n":
                 this.textIndex = 0
@@ -269,7 +274,8 @@ function TextManager() {
         this.textIndex++;
     }
     this.read = function (message, posX, posY) {
-        this.positionLeft = posX - this.textboxWidth / 2;
+        this.isReady = false
+        this.positionLeft = posX;
         this.positionBottom = posY;
         this.index = 0;
         this.message = message;
@@ -287,12 +293,19 @@ function TextManager() {
         else {
             clearInterval(this.interval)
             this.index = 0;
+            //delete text after a few second
+            setTimeout(function(){
+                myNode = document.getElementById("textBox")
+                while (myNode.firstChild) {
+                    myNode.removeChild(myNode.firstChild);
+                }
+            },2000)
+            this.isReady = true;
         }
     }
+    this.updatePosition = function(positionX,positionY){
+        var textboxElement = document.getElementById("textBox")
+        textboxElement.style.left = positionX + px;
+        textboxElement.style.bottom = positionY + px;
+    }
 }
-
-textmanager = new TextManager()
-
-str = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
-
-textmanager.read(str, 300, 100)

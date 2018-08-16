@@ -5,25 +5,21 @@ var keyIsHeld = false;
 function getInput(){
     //If a key is pressed
     if (Keys.left & !keyIsHeld) {
-        if (Player.movingRight){
-            Player.isChangingDirection = true
+        if (player.movingRight){
+            player.isChangingDirection = true
         }
-        console.clear()
-        console.log("left")
-        Player.movingRight = false;
+        player.movingRight = false;
         keyIsHeld = true;
     }
     else if (Keys.right & !keyIsHeld) {
-        if (!Player.movingRight){
-            Player.isChangingDirection = true
+        if (!player.movingRight){
+            player.isChangingDirection = true
         }
-        Player.movingRight = true;
+        player.movingRight = true;
         keyIsHeld = true;
-        console.clear()
-        console.log("RIGHT")
     }
-    else if (Keys.up & !Player.isMoving &!keyIsHeld){
-        Player.enteringHouse = true;
+    else if (Keys.up & !player.isMoving &!keyIsHeld){
+        player.enteringHouse = true;
         keyIsHeld = true;
     }
     else{

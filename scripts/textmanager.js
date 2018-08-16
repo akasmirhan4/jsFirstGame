@@ -1,15 +1,18 @@
 px = "px"
 function TextManager() {
+    this.message = null;
+    this.isStatic = false;
     this.path = "url('assets/font.png') "
     this.textboxpath = "url('assets/textbox4_12_3.png')"
+    this.id = "textBox"
     this.textIndex = 0;
     this.isReady = true;
     this.lineSpacing = 5
     this.lineCounter = 0
     this.textoffsetX = 0
     this.textoffsetY = 5
-    this.positionLeft = 0
-    this.positionBottom = 0
+    this.left = 0
+    this.bottom = 0
     this.pixelSize = 12 * 2
     this.textboxWidth = 12 * 2 * this.pixelSize;
     this.textboxHeight = 4 * 2 * this.pixelSize;
@@ -18,16 +21,15 @@ function TextManager() {
     this.frequency = 10;
     this.char = null
     this.index = 0
-    this.length = null
     this.interval = null
     this.audiopath = "assets/sans voice.mp3";
     this.audio = new Audio(this.audiopath);
     this.init_textbox = function () {
         var textboxElement = document.createElement("div")
-        textboxElement.id = "textBox"
+        textboxElement.id = this.id
         textboxElement.style.position = "absolute";
-        textboxElement.style.left = this.positionLeft + px;
-        textboxElement.style.bottom = this.positionBottom + px;
+        textboxElement.style.left = this.left + px;
+        textboxElement.style.bottom = this.bottom + px;
         textboxElement.style.width = this.textboxWidth + px;
         textboxElement.style.height = this.textboxHeight + px;
 /*         textboxElement.style.background = this.textboxpath;*/
@@ -240,13 +242,13 @@ function TextManager() {
             var charElement = document.createElement("div")
             charElement.style.position = "absolute";
             //minus eight for the character spacing
-            charElement.style.left = this.positionLeft + this.textIndex * (this.pixelSize - 8) + this.textoffsetX + px;
+            charElement.style.left = this.textIndex * (this.pixelSize - 8) + this.textoffsetX + px;
             charElement.style.bottom = this.lineCounter * -(this.pixelSize + this.lineSpacing) + (this.textboxHeight - 2 * this.pixelSize + this.textoffsetY) + px;
             charElement.style.width = this.pixelSize + px;
             charElement.style.height = this.pixelSize + px;
             //add the - minus sign
             charElement.style.background = this.path + (-this.pixelSize * 7) + px + " " + (-this.pixelSize * 3) + px;
-            document.getElementById("textBox").appendChild(charElement);
+            document.getElementById(this.id).appendChild(charElement);
             this.textIndex = 0;
             this.lineCounter++;
         }
@@ -257,7 +259,7 @@ function TextManager() {
         if (this.lineCounter >= this.textboxMaxHeight) {
             this.textIndex = 0;
             this.lineCounter = 0;
-            myNode = document.getElementById("textBox")
+            myNode = document.getElementById(this.id)
             while (myNode.firstChild) {
                 myNode.removeChild(myNode.firstChild);
             }
@@ -265,47 +267,76 @@ function TextManager() {
         var charElement = document.createElement("div")
         charElement.style.position = "absolute";
         //minus eight for the character spacing
-        charElement.style.left = this.positionLeft + this.textIndex * (this.pixelSize - 8) + this.textoffsetX + px;
+        charElement.style.left = this.textIndex * (this.pixelSize - 8) + this.textoffsetX + px;
         charElement.style.bottom = this.lineCounter * -(this.pixelSize + this.lineSpacing) + (this.textboxHeight - 2 * this.pixelSize + this.textoffsetY) + px;
         charElement.style.width = this.pixelSize + px;
         charElement.style.height = this.pixelSize + px;
         charElement.style.background = this.path + im_x + px + " " + im_y + px;
-        document.getElementById("textBox").appendChild(charElement);
+        document.getElementById(this.id).appendChild(charElement);
         this.textIndex++;
     }
-    this.read = function (message, posX, posY) {
+    this.read = function (message, x, y,isAnimated = true,isStatic = false) {
+        this.isStatic = isStatic;
         this.isReady = false
-        this.positionLeft = posX;
-        this.positionBottom = posY;
+        this.left = x;
+        this.bottom = y;
         this.index = 0;
         this.message = message;
-        this.length = message.length;
         self = this;
         this.init_textbox();
-        this.interval = setInterval(function () { self.getChar() }, 1000 / this.frequency);
+        if (isAnimated){
+            this.interval = setInterval(function () { self.getChar() }, 1000 / this.frequency);
+        }
+        else{
+            while(this.index < this.message.length){
+                self.getChar();
+            }
+        }
     }
     this.getChar = function () {
-        if (this.index < this.length) {
+        if (this.index < this.message.length) {
             this.char = this.message.charAt(this.index);
             this.write();
             this.index++;
         }
-        else {
+        else if (!isStatic){
             clearInterval(this.interval)
             this.index = 0;
             //delete text after a few second
-            setTimeout(function(){
-                myNode = document.getElementById("textBox")
-                while (myNode.firstChild) {
-                    myNode.removeChild(myNode.firstChild);
-                }
-            },2000)
+            var self = this;
+            setTimeout(function(){self.clearText()},2000)
             this.isReady = true;
         }
     }
-    this.updatePosition = function(positionX,positionY){
-        var textboxElement = document.getElementById("textBox")
-        textboxElement.style.left = positionX + px;
-        textboxElement.style.bottom = positionY + px;
+    this.updatePosition = function(x,y){
+        var textboxElement = document.getElementById(this.id)
+        this.left = x;
+        this.bottom = y;
+        textboxElement.style.left = this.left + px;
+        textboxElement.style.bottom = this.bottom + px;
+    }
+    this.updateText = function(str){
+        this.clearText();
+        this.message = str;
+        while(this.index < this.message.length){
+            self.getChar();
+        }
+    }
+    this.clearText = function(){
+        this.index = 0;
+        this.textIndex = 0;
+        this.lineCounter = 0;
+        if(this.interval){
+            clearInterval(this.interval);
+        }
+        myNode = document.getElementById(self.id)
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+    }
+    this.delete = function(){
+        var element = document.getElementById(this.id);
+        element.parentNode.removeChild(element);
+        delete this;
     }
 }

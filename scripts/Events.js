@@ -6,7 +6,6 @@ function windowIsReady(){
     return isAtMaxWidth && isAtDefaultZoom;
 }
 
-
 //List of key events
 var Keys = {
     left: false,

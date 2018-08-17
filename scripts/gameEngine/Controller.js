@@ -4,7 +4,7 @@ var keyIsHeld = false;
 
 function getInput(){
     //If a key is pressed
-    if (Keys.left & !keyIsHeld) {
+    if (Keys.left & !keyIsHeld & !Keys.right) {
         if (player.movingRight){
             player.isChangingDirection = true
         }

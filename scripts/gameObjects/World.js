@@ -1,15 +1,4 @@
-//Global variables-------------------------------------------------
-px = "px"
-pixelSize = 32*4
-//End Global variables----------------------------------------------
-
-//Start events----------------------------------------------------
-unloadScrollBars();
-//End events-------------------------------------------------------
-
 var World = function () {
-    this.left_to_be = null;
-    this.bottom_to_be = null;
     this.left = 0;
     this.bottom = 0;
     this.tileWidth = 64;
@@ -17,15 +6,6 @@ var World = function () {
     this.id = "world"
     this.width = pixelSize*this.tileWidth;
     this.height = pixelSize*this.tileHeight;
-    this.shiftRight = function () {
-        //TODO
-        this.left++;
-    }
-
-    this.shiftLeft = function () {
-        //TODO
-        this.left--;
-    }
 
     this.initializeWorld = function () {
         //Delete world first

@@ -1,6 +1,20 @@
 //Global variables------------------------------------------------------------------
 FPS = 24;
+px = "px";
+pixelSize = 32*4
+unloadScrollBars();
 //End Global variables--------------------------------------------------------
+
+//Gameloop
+function Game() {
+    //showPlayerPosition();
+    getInput();
+    gameLogic();
+    update();
+    render();
+    requestAnimationFrame(Game);
+}
+
 function update() {
     //for debug=========================================
     if(bool_togglePlayerPosition){
@@ -28,38 +42,24 @@ function update() {
         player.isMoving = true;
     }
 }
-function Game() {
-    getInput()
-    update()
-    gameLogic()
-    requestAnimationFrame(Game);
+
+
+
+function render(){
+    house1.render();
 }
-function gameLogic() {
-    //Check for player at the edge of screen i.e 95% and 5%
-    if (player.left_screen + player.width > screen.availWidth * 0.95) {
-        if (world.left != -world.width + screen.availWidth) {
-            player.left_screen = screen.availWidth * 0.05;
-            worldAnimation.translate(-screen.availWidth, 0)
-            playerAnimation.translate(screen.availWidth * 0.1 + pixelSize, 0);
-        }
-    }
-    else if (player.left_screen < screen.availWidth * 0.05) {
-        if (world.left != 0) {
-            player.left_screen = screen.availWidth * 0.95 - pixelSize;
-            worldAnimation.translate(screen.availWidth, 0);
-            playerAnimation.translate(-screen.availWidth * 0.1 - pixelSize, 0);
-        }
-    }
-}
-//Initialize all gameobject
+
+
+
+
 if (windowIsReady()) {
-    requestAnimationFrame(Game);
     var world = new World();
     var worldAnimation = new Animate(world);
-    var house1 = new House();
+    var house1 = new gameObject("house",pixelSize*3,pixelSize,pixelSize*3,pixelSize*2,"assets/house.png",1);
     var player = new Player();
     var playerAnimation = new Animate(player);
 
+    requestAnimationFrame(Game);
 }
 else {
     document.body.innerText = "Please maximize window and set to default zoom. Refresh the page."

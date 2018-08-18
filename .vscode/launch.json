@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:8080",
-            "file": "C:/Users/Amirrul Kasmirhan/Desktop/myGame/Javascript/MyFirstJavascript.html",
+            "file": "${workspaceFolder}/MyFirstJavascript.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

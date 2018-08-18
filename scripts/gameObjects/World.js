@@ -1,87 +1,59 @@
-var World = function () {
-    this.left = 0;
-    this.bottom = 0;
-    this.tileWidth = 64;
-    this.tileHeight = 64;
-    this.id = "world"
-    this.width = pixelSize*this.tileWidth;
-    this.height = pixelSize*this.tileHeight;
-
-    this.initializeWorld = function () {
-        //Delete world first
-        var myNode = document.body;
-        while (myNode.firstChild) {
-            myNode.removeChild(myNode.firstChild);
-        }
+class World extends gameObject {
+    constructor(tileWidth = 64, tileHeight = 64) {
+        super("world", 0, 0, pixelSize * tileWidth, pixelSize * tileHeight, null, null, null, -1)
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        this.initializeWorld();
+    }
+    initializeWorld() {
         //Load world element------------------------------------------
-        world = document.createElement("div");
-        world.id = this.id;
-        document.body.appendChild(world);
-        document.getElementById(this.id).className = "World";
-        document.getElementById(this.id).style.position = 'absolute';
-        document.getElementById(this.id).style.left = this.left + px;
-        document.getElementById(this.id).style.bottom = this.bottom + px;
-        document.getElementById(this.id).style.height = this.height + px;
-        document.getElementById(this.id).style.width = this.width + px;
         document.getElementById(this.id).style.backgroundColor = "#484e4c";
-
         //set layers
-        layer = document.createElement("div");
+        var layer = document.createElement("div");
         layer.id = "layer0";
         document.getElementById(this.id).appendChild(layer);
-
         layer = document.createElement("div");
         layer.id = "layer1";
         document.getElementById(this.id).appendChild(layer);
-
         layer = document.createElement("div");
         layer.id = "layer2";
         document.getElementById(this.id).appendChild(layer);
-
         layer = document.createElement("div");
         layer.id = "layer3";
         document.getElementById(this.id).appendChild(layer);
-
         this.initializeGround();
-    }
-
-    this.initializeGround = function () {
+    };
+    initializeGround() {
         //delete ground
         var myNode = document.getElementById("layer0");
         while (myNode.firstChild) {
             myNode.removeChild(myNode.firstChild);
         }
         //create ground
-        ground = document.createElement("div");
+        var ground = document.createElement("div");
         ground.id = "ground";
-
         document.getElementById("layer0").appendChild(ground);
-
         //Create the ground tile
-        for (x = 0; x < this.width; x += pixelSize) {
-            var tile = document.createElement("div")
+        for (var x = 0; x < this.width; x += pixelSize) {
+            var tile = document.createElement("div");
             tile.style.position = "absolute";
             tile.style.left = x + px;
             tile.style.bottom = this.bottom + px;
             tile.style.width = pixelSize + px;
             tile.style.height = pixelSize + px;
             tile.style.background = "url('assets/tileset4.png') " + 0 + px + " " + 0 + px;
-            document.getElementById("ground").appendChild(tile)
+            document.getElementById("ground").appendChild(tile);
         }
         //Create the second up ground tile
         for (x = 0; x < this.width; x += pixelSize) {
-            var tile = document.createElement("div")
+            var tile = document.createElement("div");
             tile.style.position = "absolute";
             tile.style.left = x + "px";
             tile.style.bottom = pixelSize + px;
             tile.style.width = pixelSize + px;
             tile.style.height = pixelSize + px;
             tile.style.background = "url('assets/tileset4.png')" + (-pixelSize) + px + " " + 0 + px;
-            document.getElementById("ground").appendChild(tile)
+            document.getElementById("ground").appendChild(tile);
         }
-    }
-
-    this.initializeWorld();
-    var self = this;
-    window.onresize = function(){self.initializeGround();}
+    };
 }

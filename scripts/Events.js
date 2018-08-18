@@ -10,7 +10,8 @@ function windowIsReady(){
 var Keys = {
     left: false,
     right: false,
-    up: false
+    up: false,
+    f2: false,
 };
 
 //OnKeyDown Event
@@ -19,8 +20,12 @@ window.onkeydown = function(e) {
     e.preventDefault();
     if      (kc === 37 & !Keys.right){ Keys.left = true;}
     else if (kc === 39 & !Keys.left) Keys.right = true;
-    else if (kc === 38){
+
+    if (kc === 38){
         Keys.up = true;
+    }
+    if (kc === 113){
+        Keys.f2 = true;
     }
 };
 
@@ -30,8 +35,11 @@ window.onkeyup = function(e) {
     e.preventDefault();
 
     if      (kc === 37) Keys.left = false;
-    else if (kc === 39) Keys.right = false;
-    else if (kc === 38) Keys.up = false;
+    if (kc === 39) Keys.right = false;
+
+    if (kc === 38) Keys.up = false;
+
+    if (kc === 113) Keys.f2 = false;
 
 };
 

@@ -1,13 +1,17 @@
 bool_togglePlayerPosition = false;
 bool_toggleWorldEdge = false;
+var textPosition = null;
+
 function togglePlayerPosition() {
     if (bool_togglePlayerPosition) {
         bool_togglePlayerPosition = false;
         textPosition.delete();
+        delete textPosition;
+        textPosition = null;
     }
     else {
         bool_togglePlayerPosition = true;
-        textPosition = new TextManager();
+        textPosition = new TextManager("textBox",player.left, player.bottom,player.width,player.height,true);
         str = player.left + "," + player.bottom;
         textPosition.read(str, player.left, player.bottom, false, true)
     }

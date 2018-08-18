@@ -1,29 +1,42 @@
-//global parameters-------------------------------------------
-var keyIsHeld = false;
+//global parameters------------------------------------------
+UpPressed = false;
+f2Pressed = false;
 //------------------------------------------------------------
 
-function getInput(){
-    //If a key is pressed
-    if (Keys.left & !keyIsHeld & !Keys.right) {
-        if (player.movingRight){
-            player.isChangingDirection = true
+function playerInput() {
+    //only move when player is idle
+    if (player.state == player.getStateIndex("IDLE")) {
+        //If a key is pressed
+        if (Keys.left) {
+            if (player.facingRight) {
+                player.isChangingDirection = true
+            }
+            player.facingRight = false;
         }
-        player.movingRight = false;
-        keyIsHeld = true;
-    }
-    else if (Keys.right & !keyIsHeld) {
-        if (!player.movingRight){
-            player.isChangingDirection = true
+        else if (Keys.right) {
+            if (!player.facingRight) {
+                player.isChangingDirection = true
+            }
+            player.facingRight = true;
         }
-        player.movingRight = true;
-        keyIsHeld = true;
     }
-    else if (Keys.up & !player.isMoving &!keyIsHeld){
-        player.enteringHouse = true;
-        keyIsHeld = true;
+
+    if (Keys.up){
+        if(!UpPressed) {
+            player.Action();
+            UpPressed = true;
+        }
     }
     else{
-        keyIsHeld = false;
+        UpPressed = false;
+    }
+    if (Keys.f2){
+        if(!f2Pressed) {
+            togglePlayerPosition()
+            f2Pressed = true;
+        }
+    }
+    else{
+        f2Pressed = false;
     }
 }
-

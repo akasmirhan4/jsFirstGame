@@ -1,3 +1,7 @@
+function getBackgroundPosition(imagePath, tile_x, tile_y, pixelSize){
+    return ("url(" + imagePath + ") " + (-pixelSize*tile_x) + px + " " + (-pixelSize*tile_y) + px);
+}
+
 class World extends gameObject {
     constructor(tileWidth = 64, tileHeight = 64) {
         super("world", 0, 0, pixelSize * tileWidth, pixelSize * tileHeight, null, null, null, -1)
@@ -7,20 +11,21 @@ class World extends gameObject {
     }
     initializeWorld() {
         //Load world element------------------------------------------
-        document.getElementById(this.id).style.backgroundColor = "#484e4c";
+        this.element.style.backgroundColor = "#484e4c";
+        this.element.style.zIndex = -1;
         //set layers
         var layer = document.createElement("div");
         layer.id = "layer0";
-        document.getElementById(this.id).appendChild(layer);
+        this.element.appendChild(layer);
         layer = document.createElement("div");
         layer.id = "layer1";
-        document.getElementById(this.id).appendChild(layer);
+        this.element.appendChild(layer);
         layer = document.createElement("div");
         layer.id = "layer2";
-        document.getElementById(this.id).appendChild(layer);
+        this.element.appendChild(layer);
         layer = document.createElement("div");
         layer.id = "layer3";
-        document.getElementById(this.id).appendChild(layer);
+        this.element.appendChild(layer);
         this.initializeGround();
     };
     initializeGround() {
@@ -56,4 +61,6 @@ class World extends gameObject {
             document.getElementById("ground").appendChild(tile);
         }
     };
-}
+};
+
+

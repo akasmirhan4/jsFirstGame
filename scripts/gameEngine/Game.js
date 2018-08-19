@@ -3,6 +3,7 @@ FPS = 24;
 px = "px";
 pixelSize = 32*4
 unloadScrollBars();
+world = null;
 //End Global variables--------------------------------------------------------
 
 //Gameloop
@@ -17,7 +18,8 @@ function Game() {
 
 //Check if window is ready
 if (windowIsReady()) {
-    var world = new World();
+    document.body.style.backgroundColor = "#1d1c19"
+    world = new World();
     window.onresize = function () { world.initializeGround(); }
 
     var worldAnimation = new Animate(world);

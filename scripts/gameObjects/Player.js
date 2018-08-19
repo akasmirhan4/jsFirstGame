@@ -6,19 +6,22 @@ class Player extends gameObject {
         this.setStates("IDLE", "MOVE", "TURN", "ACTION");
         this.setState("IDLE");
     }
-    Action(){
+    Action() {
         //Loop all gameObject that is interactable in the current
-        if(this.isOverlapping(house1,pixelSize*1.5,pixelSize*1.5)){
+        if (this.isOverlapping(house1, pixelSize * 1.5, pixelSize * 1.5)) {
             this.setState("ACTION");
+            EnteringHouse()
             house1.interact();
             this.setInterval(1);
         }
+
+        //worldAnimation.translate(0,pixelSize*(world.houseTileHeight))
     };
     Move() {
         //facing right
         if (this.facingRight) {
             //dont translate if object reach edge
-            if (this.left_screen + this.width < screen.availWidth) {
+            if (this.left_screen + this.width < screen.availWidth && this.left + this.width < world.width) {
                 this.setPosition(this.left + 4, this.bottom)
             }
             //change image frame
@@ -65,7 +68,7 @@ class Player extends gameObject {
         this.imageInterval++;
         if (this.imageInterval >= 2) {
             this.clearInterval();
-            this.setImagePath('assets/4unicorn_withChild.png');
+            // this.setImagePath('assets/4unicorn_withChild.png');
         }
     };
 }

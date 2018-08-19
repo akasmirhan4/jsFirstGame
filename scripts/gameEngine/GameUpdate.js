@@ -39,8 +39,5 @@ function render(){
     world.render();
     house1.render();
     player.render();
-    if (textPosition){
-        textPosition.render();
-    }
-
+    if (textPosition){textPosition.render();}
 }

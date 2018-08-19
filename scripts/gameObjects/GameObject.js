@@ -1,6 +1,7 @@
 class gameObject {
     constructor(id, left, bottom, width, height, imagePath, im_x = 0, im_y = 0, layer = 2) {
         this.id = id;
+        this.element = null;
         this.left = left;
         this.bottom = bottom;
         this.left_screen = this.left % screen.availWidth;
@@ -22,25 +23,28 @@ class gameObject {
     initialize() {
         var objectElement = document.createElement("div");
         objectElement.id = this.id;
-        if(this.layer !=-1){
+        if (this.layer != -1) {
             document.getElementById("layer" + this.layer).appendChild(objectElement);
         }
-        else{
+        else {
             document.body.appendChild(objectElement);
         }
-        document.getElementById(this.id).style.position = 'absolute';
+        this.element = document.getElementById(this.id);
+        this.element.style.position = 'absolute';
     }
     render() {
-        document.getElementById(this.id).style.left = this.left + px;
-        document.getElementById(this.id).style.bottom = this.bottom + px;
-        document.getElementById(this.id).style.width = this.width + px;
-        document.getElementById(this.id).style.height = this.height + px;
-        if(this.imagePath){
-            document.getElementById(this.id).style.background = "url('" + this.imagePath + "') " + this.im_x + px + " " + this.im_y + px;
+        if (this.element) {
+            this.element.style.left = this.left + px;
+            this.element.style.bottom = this.bottom + px;
+            this.element.style.width = this.width + px;
+            this.element.style.height = this.height + px;
+            if (this.imagePath) {
+                this.element.style.background = "url('" + this.imagePath + "') " + this.im_x + px + " " + this.im_y + px;
+            }
         }
     }
     delete() {
-        var Objectelement = document.getElementById(this.id);
+        var Objectelement = this.element;
         Objectelement.parentNode.removeChild(Objectelement);
     }
     setPosition(left, bottom) {

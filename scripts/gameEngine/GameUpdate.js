@@ -36,8 +36,8 @@ function update() {
 }
 
 function render(){
-    world.render();
-    house1.render();
-    player.render();
+    gameObjects.forEach(function(gameObject){
+        gameObject.render();
+    })
     if (textPosition){textPosition.render();}
 }

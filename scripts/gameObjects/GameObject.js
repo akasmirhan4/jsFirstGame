@@ -1,3 +1,14 @@
+var gameObjects = [];
+
+function deleteGameObjects() {
+    //TODO: delete all gameObject
+    gameObjects.forEach(function (gameObject) {
+        gameObject.delete();
+        gameObjects = [];
+    })
+}
+
+
 class gameObject {
     constructor(id, left, bottom, width, height, imagePath, im_x = 0, im_y = 0, layer = 2) {
         this.id = id;
@@ -10,19 +21,27 @@ class gameObject {
         this.height = height;
         this.imagePath = imagePath;
         this.layer = layer;
-        this.im_x = 0;
-        this.im_y = 0;
+        this.im_x = im_x;
+        this.im_y = im_y;
         this.interval = null;
         this.states = [];
-        this.initialize();
         this.state = null;
         this.isAnimating = false;
         this.imageInterval = 0;
         this.animate = null;
+
+        gameObjects.push(this);
+
+        if (this.layer){
+            this.initialize();
+        }
     }
     initialize() {
+
+
         var objectElement = document.createElement("div");
         objectElement.id = this.id;
+
         if (this.layer != -1) {
             document.getElementById("layer" + this.layer).appendChild(objectElement);
         }
@@ -46,6 +65,7 @@ class gameObject {
     delete() {
         var Objectelement = this.element;
         Objectelement.parentNode.removeChild(Objectelement);
+        gameObjects.pop(this);
     }
     setPosition(left, bottom) {
         this.left = left;
@@ -122,4 +142,8 @@ class gameObject {
     getStateIndex(state) {
         return this.states.indexOf(state);
     }
+}
+
+function getBackgroundPosition(imagePath, tile_x, tile_y, pixelSize){
+    return ("url(" + imagePath + ") " + (-pixelSize*tile_x) + px + " " + (-pixelSize*tile_y) + px);
 }

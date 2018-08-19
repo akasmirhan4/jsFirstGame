@@ -1,13 +1,11 @@
-function getBackgroundPosition(imagePath, tile_x, tile_y, pixelSize){
-    return ("url(" + imagePath + ") " + (-pixelSize*tile_x) + px + " " + (-pixelSize*tile_y) + px);
-}
-
 class World extends gameObject {
     constructor(tileWidth = 64, tileHeight = 64) {
         super("world", 0, 0, pixelSize * tileWidth, pixelSize * tileHeight, null, null, null, -1)
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.initializeWorld();
+
+        window.onresize = function () { world.initializeGround(); }
     }
     initializeWorld() {
         //Load world element------------------------------------------
@@ -61,6 +59,14 @@ class World extends gameObject {
             document.getElementById("ground").appendChild(tile);
         }
     };
+
+    interact(){
+        return 0;
+    }
+    delete(){
+        super.delete();
+        window.onresize = null;
+    }
 };
 
 

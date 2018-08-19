@@ -20,10 +20,10 @@ function Game() {
 if (windowIsReady()) {
     document.body.style.backgroundColor = "#1d1c19"
     world = new World();
-    window.onresize = function () { world.initializeGround(); }
-
     var worldAnimation = new Animate(world);
+
     var house1 = new House("house",pixelSize*3,pixelSize,pixelSize*3,pixelSize*2,"assets/house.png",1);
+
     var player = new Player("player",pixelSize*2,pixelSize,pixelSize,pixelSize,"assets/unicorn4.png");
     var playerAnimation = new Animate(player);
 

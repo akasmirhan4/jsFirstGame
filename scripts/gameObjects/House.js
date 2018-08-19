@@ -7,8 +7,8 @@ class House extends gameObject{
         this.setState("UNINTERACTED")
     }
     interact(){
-        this.setState("INTERACTED")
         this.setImagePathPosition(0,-this.height);
         this.parentsAwaken = true;
+        EnteringHouse();
     }
 }

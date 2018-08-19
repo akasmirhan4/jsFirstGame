@@ -2,11 +2,25 @@ function EnteringHouse() {
     var transitionTime = 5000;
     screenFadeInBlack(transitionTime / 2);
     setTimeout(function () {
-        world.delete();
+        deleteGameObjects();
         screenFadeOutBlack(transitionTime / 2);
-        world = new Interior(6, 10, 3);
+        world = new Interior(5, 5, 3);
         worldAnimation.object = world;
-        player.initialize();
+        player = new Player("player", world.doors[0] * pixelSize, pixelSize, pixelSize, pixelSize, "assets/unicorn4.png");
+    }, transitionTime / 2);
+
+}
+
+function ExitingHouse() {
+    var transitionTime = 5000;
+    screenFadeInBlack(transitionTime / 2);
+    setTimeout(function () {
+        deleteGameObjects();
+        screenFadeOutBlack(transitionTime / 2);
+        world = new world();
+        worldAnimation.object = world;
+        //TODO: figure how to position the player outside
+        player = new Player("player", world.doors[0] * pixelSize, pixelSize, pixelSize, pixelSize, "assets/unicorn4.png");
     }, transitionTime / 2);
 
 }
@@ -31,7 +45,9 @@ class Interior extends gameObject {
         this.layoutImagePath = "assets/houseLayout_32x4_4_7.png"
         this.interiorImagePath = null;
         this.id = "world"
-        this.initializeWorld()
+        this.doors = [];
+        this.doorsElement = [];
+        this.initializeWorld();
     }
     initializeWorld() {
         //Load world element------------------------------------------
@@ -62,6 +78,7 @@ class Interior extends gameObject {
         document.getElementById(this.id).appendChild(layer);
         this.initializeLayout();
         this.initializeWallpaper();
+        this.initializeDoors();
     }
     initializeLayout() {
         var layout = document.createElement("div");
@@ -372,8 +389,8 @@ class Interior extends gameObject {
         for (var floor = 0; floor < this.nFloor; floor++) {
             let wallpaperElement = document.getElementById("floor" + floor + "wallpaper");
             wallpaperElement.style.position = "absolute"
-            wallpaperElement.width = (this.houseTileWidth-2)*pixelSize;
-            wallpaperElement.height = (this.houseTileHeight-2)*pixelSize;
+            wallpaperElement.width = (this.houseTileWidth - 2) * pixelSize;
+            wallpaperElement.height = (this.houseTileHeight - 2) * pixelSize;
             wallpaperElement.style.left = pixelSize + px;
             wallpaperElement.style.width = wallpaperElement.width + px;
             wallpaperElement.style.top = pixelSize + px;
@@ -399,7 +416,7 @@ class Interior extends gameObject {
                 tile.style.background = getBackgroundPosition(this.interiorImagePath, 2, 0, pixelSize);
                 wallpaperElement.appendChild(tile);
 
-                for (var left = pixelSize; left < wallpaperElement.width-pixelSize; left+=pixelSize) {
+                for (var left = pixelSize; left < wallpaperElement.width - pixelSize; left += pixelSize) {
                     tile = document.createElement("div");
                     tile.style.position = "absolute";
                     tile.style.left = left + px;
@@ -430,7 +447,7 @@ class Interior extends gameObject {
                 tile.style.background = getBackgroundPosition(this.interiorImagePath, 2, 2, pixelSize);
                 wallpaperElement.appendChild(tile);
 
-                for (var left = pixelSize; left < wallpaperElement.width-pixelSize; left+=pixelSize) {
+                for (var left = pixelSize; left < wallpaperElement.width - pixelSize; left += pixelSize) {
                     tile = document.createElement("div");
                     tile.style.position = "absolute";
                     tile.style.left = left + px;
@@ -443,7 +460,7 @@ class Interior extends gameObject {
             }
             //inbetween
             {
-                for(var bottom = pixelSize; bottom < wallpaperElement.height - pixelSize; bottom+=pixelSize){
+                for (var bottom = pixelSize; bottom < wallpaperElement.height - pixelSize; bottom += pixelSize) {
                     let tile = document.createElement("div");
                     tile.style.position = "absolute";
                     tile.style.left = 0 + px;
@@ -462,7 +479,7 @@ class Interior extends gameObject {
                     tile.style.background = getBackgroundPosition(this.interiorImagePath, 2, 1, pixelSize);
                     wallpaperElement.appendChild(tile);
 
-                    for (var left = pixelSize; left < wallpaperElement.width-pixelSize; left+=pixelSize) {
+                    for (var left = pixelSize; left < wallpaperElement.width - pixelSize; left += pixelSize) {
                         tile = document.createElement("div");
                         tile.style.position = "absolute";
                         tile.style.left = left + px;
@@ -479,12 +496,82 @@ class Interior extends gameObject {
 
     }
     initializeDoors() {
+        this.doors = [];
+        this.doors.push(Math.floor(Math.random() * (this.houseTileWidth - 2)) + 1);
+        for (var floor = 1; floor < this.nFloor; floor++) {
+            do {
+                var rnd = Math.floor(Math.random() * (this.houseTileWidth - 2)) + 1
+            } while (rnd == this.doors[floor - 1])
+            this.doors.push(rnd);
+        }
+        console.log(this.doors);
+
+        //load doors
+        for (var floor = 0; floor < this.nFloor; floor++) {
+            let layoutElement = document.getElementById("floor" + floor + "layout");
+            if (floor == 0) {
+                this.doorsElement.push(new Door("door_" + floor + "_0", layoutElement, 0, 0, this.doors[floor] * pixelSize, 0))
+            }
+            else {
+                this.doorsElement.push(new Door("door_" + floor + "_0", layoutElement, 1, 0, this.doors[floor] * pixelSize, 2))
+            }
+            //if there is a floor above place a stair
+            if (this.doors[floor + 1]) {
+                this.doorsElement.push(new Door("door_" + floor + "_1", layoutElement, 1, 0, this.doors[floor + 1] * pixelSize, 1))
+            }
+        }
 
     }
+
+    interact() {
+        return 0;
+    }
+
     goUpstairs() {
         worldAnimation.translate(0, -pixelSize * (this.houseTileHeight))
     }
     goDownstairs() {
         worldAnimation.translate(0, pixelSize * (this.houseTileHeight))
+    }
+
+    exit() {
+        ExitingHouse();
+    }
+
+}
+
+class Door extends gameObject {
+    constructor(id, layerElement, tile_x, tile_y, left, type, bottom = pixelSize, width = pixelSize, height = 2 * pixelSize, doorImagePath = "assets/interior_door_32x4_2_3.png") {
+        super(id, left, bottom, width, height, doorImagePath, -tile_x * pixelSize, -tile_y * pixelSize, null);
+        this.layerElement = layerElement;
+        this.type = type; //[0: outside, 1: upstairs, 2:downstairs]
+        this.initialize();
+    }
+    initialize() {
+        var objectElement = document.createElement("div");
+        objectElement.id = this.id;
+        if (this.layerElement) {
+            this.layerElement.appendChild(objectElement);
+        }
+        this.element = document.getElementById(this.id);
+        this.element.style.position = 'absolute';
+    }
+    interact() {
+        switch (this.type) {
+            case 0:
+                world.exit();
+                break;
+            case 1:
+                world.goUpstairs();
+                player.setPosition(this.left, this.bottom + world.houseTileHeight * pixelSize);
+                break;
+            case 2:
+                world.goDownstairs();
+                player.setPosition(this.left, this.bottom - world.houseTileHeight * pixelSize);
+                break;
+            default:
+                console.log("door type is unknown");
+                break;
+        }
     }
 }

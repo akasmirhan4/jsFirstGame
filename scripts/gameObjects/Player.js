@@ -1,6 +1,8 @@
+
+
 class Player extends gameObject {
-    constructor(id = "player", left, bottom, width, height, imagePath, im_x = 0, im_y = 0, layer = 3) {
-        super(id, left, bottom, width, height, imagePath, im_x, im_y, layer);
+    constructor(id = "player", left, bottom, width, height, imagePath, im_x = 0, im_y = 0,layerElement = document.getElementById("layer3")) {
+        super(id, left, bottom, width, height, imagePath, im_x, im_y, layerElement);
         this.facingRight = true;
         this.enteringHouse = false;
         this.setStates("IDLE", "MOVE", "TURN", "ACTION");
@@ -8,9 +10,10 @@ class Player extends gameObject {
     }
     Action() {
         //Loop all gameObject that is interactable in the current
-        //TODO:Find all interactable gameObject
+        //TODO:interact only gameObject within their world container.
+        //TODO:if change scene, make a new gameObject array
         let self = this;
-        gameObjects.forEach(function (gameObject) {
+        sceneGameObjects.forEach(function (gameObject) {
             if (self.isOverlapping(gameObject)) {
                 gameObject.interact();
             }

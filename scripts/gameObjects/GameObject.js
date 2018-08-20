@@ -1,16 +1,18 @@
 var gameObjects = [];
+var sceneGameObjects = [];
 
 function deleteGameObjects() {
     //TODO: delete all gameObject
     gameObjects.forEach(function (gameObject) {
         gameObject.delete();
         gameObjects = [];
+        sceneGameObjects = [];
     })
 }
 
 
 class gameObject {
-    constructor(id, left, bottom, width, height, imagePath, im_x = 0, im_y = 0, layer = 2) {
+    constructor(id, left, bottom, width, height, imagePath, im_x = 0, im_y = 0, layerElement = null) {
         this.id = id;
         this.element = null;
         this.left = left;
@@ -20,7 +22,7 @@ class gameObject {
         this.width = width;
         this.height = height;
         this.imagePath = imagePath;
-        this.layer = layer;
+        this.layerElement = layerElement;
         this.im_x = im_x;
         this.im_y = im_y;
         this.interval = null;
@@ -32,18 +34,15 @@ class gameObject {
 
         gameObjects.push(this);
 
-        if (this.layer){
-            this.initialize();
-        }
+        this.initialize();
+
     }
     initialize() {
-
-
         var objectElement = document.createElement("div");
         objectElement.id = this.id;
 
-        if (this.layer != -1) {
-            document.getElementById("layer" + this.layer).appendChild(objectElement);
+        if (this.layerElement) {
+            this.layerElement.appendChild(objectElement);
         }
         else {
             document.body.appendChild(objectElement);
@@ -63,8 +62,7 @@ class gameObject {
         }
     }
     delete() {
-        var Objectelement = this.element;
-        Objectelement.parentNode.removeChild(Objectelement);
+        this.element.parentNode.removeChild(this.element);
         gameObjects.pop(this);
     }
     setPosition(left, bottom) {
@@ -79,6 +77,12 @@ class gameObject {
     setImagePathPosition(im_x, im_y) {
         this.im_x = im_x;
         this.im_y = im_y;
+    }
+    setLayerElement(layerElement){
+        //remove old element
+        this.element.parentNode.removeChild(this.element);
+        this.layerElement = layerElement;
+        this.layerElement.appendChild(this.element)
     }
     isOverlapping(object, marginLeft = 0, marginRight = 0, marginTop = 0, marginBottom = 0) {
         return (this.left + this.width >= object.left + marginLeft &&
@@ -144,6 +148,6 @@ class gameObject {
     }
 }
 
-function getBackgroundPosition(imagePath, tile_x, tile_y, pixelSize){
-    return ("url(" + imagePath + ") " + (-pixelSize*tile_x) + px + " " + (-pixelSize*tile_y) + px);
+function getBackgroundPosition(imagePath, tile_x, tile_y, pixelSize) {
+    return ("url(" + imagePath + ") " + (-pixelSize * tile_x) + px + " " + (-pixelSize * tile_y) + px);
 }

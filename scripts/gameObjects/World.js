@@ -1,6 +1,6 @@
 class World extends gameObject {
     constructor(tileWidth = 64, tileHeight = 64) {
-        super("world", 0, 0, pixelSize * tileWidth, pixelSize * tileHeight, null, null, null, -1)
+        super("world", 0, 0, pixelSize * tileWidth, pixelSize * tileHeight, null, null, null)
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         this.initializeWorld();

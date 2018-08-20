@@ -6,7 +6,8 @@ function EnteringHouse() {
         screenFadeOutBlack(transitionTime / 2);
         world = new Interior(5, 5, 3);
         worldAnimation.object = world;
-        player = new Player("player", world.doors[0] * pixelSize, pixelSize, pixelSize, pixelSize, "assets/unicorn4.png");
+        player = new Player("player", world.doors[0] * pixelSize, pixelSize, pixelSize, pixelSize,
+            "assets/unicorn4.png", 0, 0, document.getElementById("floor0player"));
     }, transitionTime / 2);
 
 }
@@ -17,10 +18,11 @@ function ExitingHouse() {
     setTimeout(function () {
         deleteGameObjects();
         screenFadeOutBlack(transitionTime / 2);
-        world = new world();
+        world = new World();
         worldAnimation.object = world;
+        var house1 = new House("house",pixelSize*3,pixelSize,pixelSize*3,pixelSize*2,"assets/house.png",1);
         //TODO: figure how to position the player outside
-        player = new Player("player", world.doors[0] * pixelSize, pixelSize, pixelSize, pixelSize, "assets/unicorn4.png");
+        player = new Player("player",house1.left+pixelSize,pixelSize,pixelSize,pixelSize,"assets/unicorn4.png");
     }, transitionTime / 2);
 
 }
@@ -34,48 +36,41 @@ class Interior extends gameObject {
         //houseTileHeight   --  the height of each floor in terms of tile
         //nFloor            --  the number of floor
         //interior          --  the interior design: [0: blue(default), 1: green, 2: red, 3: brown]
+
         var width = houseTileWidth * pixelSize
         var height = houseTileHeight * nFloor * pixelSize
-        super("world", 0, 0, width, height, null, null, null, -1)
+        super("world", 0, 0, width, height, null, null, null)
 
         this.houseTileWidth = houseTileWidth
         this.houseTileHeight = houseTileHeight
         this.nFloor = nFloor
+        this.currentFloor = 0;
         this.interior = interior
         this.layoutImagePath = "assets/houseLayout_32x4_4_7.png"
         this.interiorImagePath = null;
-        this.id = "world"
         this.doors = [];
         this.doorsElement = [];
         this.initializeWorld();
+        this.setGameObjects();
     }
     initializeWorld() {
         //Load world element------------------------------------------
         //TODO: CHANGE BACKGROUND COLOR BASED ON INTERIOR
-        document.getElementById(this.id).style.backgroundColor = "#31363d";
-        document.getElementById(this.id).style.zIndex = -1;
+        this.element.style.backgroundColor = "#31363d";
+        this.element.style.zIndex = -1;
 
         //set the world at the center of the screen
         this.setPosition(screen.availWidth / 2 - this.width / 2, 0);
         //set layers
         var layer = document.createElement("div");
-        layer.id = "layer-2";
-        document.getElementById(this.id).appendChild(layer);
-        var layer = document.createElement("div");
-        layer.id = "layer-1";
-        document.getElementById(this.id).appendChild(layer);
-        var layer = document.createElement("div");
         layer.id = "layer0";
-        document.getElementById(this.id).appendChild(layer);
-        layer = document.createElement("div");
+        this.element.appendChild(layer);
+        var layer = document.createElement("div");
         layer.id = "layer1";
-        document.getElementById(this.id).appendChild(layer);
-        layer = document.createElement("div");
+        this.element.appendChild(layer);
+        var layer = document.createElement("div");
         layer.id = "layer2";
-        document.getElementById(this.id).appendChild(layer);
-        layer = document.createElement("div");
-        layer.id = "layer3";
-        document.getElementById(this.id).appendChild(layer);
+        this.element.appendChild(layer);
         this.initializeLayout();
         this.initializeWallpaper();
         this.initializeDoors();
@@ -83,7 +78,7 @@ class Interior extends gameObject {
     initializeLayout() {
         var layout = document.createElement("div");
         layout.id = "interiorLayout";
-        document.getElementById("layer-2").appendChild(layout);
+        document.getElementById("layer0").appendChild(layout);
 
         //create container for each floor
         for (var floor = 0; floor < this.nFloor; floor++) {
@@ -96,7 +91,7 @@ class Interior extends gameObject {
             floorElement.style.width = "100%";
             floorElement.style.height = this.houseTileHeight * pixelSize + px;
 
-            //for each floor create three layers wallpaper,layout,objects
+            //for each floor create five layers wallpaper,layout,objects0,player,objects1
             var layer = document.createElement("div");
             layer.id = floorElement.id + "wallpaper";
             floorElement.appendChild(layer);
@@ -104,7 +99,13 @@ class Interior extends gameObject {
             layer.id = floorElement.id + "layout";
             floorElement.appendChild(layer);
             var layer = document.createElement("div");
-            layer.id = floorElement.id + "objects";
+            layer.id = floorElement.id + "objects0";
+            floorElement.appendChild(layer);
+            var layer = document.createElement("div");
+            layer.id = floorElement.id + "player";
+            floorElement.appendChild(layer);
+            var layer = document.createElement("div");
+            layer.id = floorElement.id + "objects1";
             floorElement.appendChild(layer);
         }
 
@@ -508,7 +509,7 @@ class Interior extends gameObject {
 
         //load doors
         for (var floor = 0; floor < this.nFloor; floor++) {
-            let layoutElement = document.getElementById("floor" + floor + "layout");
+            let layoutElement = document.getElementById("floor" + floor + "objects0");
             if (floor == 0) {
                 this.doorsElement.push(new Door("door_" + floor + "_0", layoutElement, 0, 0, this.doors[floor] * pixelSize, 0))
             }
@@ -522,15 +523,29 @@ class Interior extends gameObject {
         }
 
     }
+    setGameObjects(){
+        sceneGameObjects = [];
+        let object0LayerElement = document.getElementById("floor" + this.currentFloor + "objects0");
+        let object1LayerElement = document.getElementById("floor" + this.currentFloor + "objects1");
 
+        gameObjects.forEach(function(gameObject){
+            if(gameObject.layerElement == object0LayerElement || gameObject.layerElement == object1LayerElement){
+                sceneGameObjects.push(gameObject)
+            }
+        })
+    }
     interact() {
         return 0;
     }
 
     goUpstairs() {
+        this.currentFloor++;
+        this.setGameObjects();
         worldAnimation.translate(0, -pixelSize * (this.houseTileHeight))
     }
     goDownstairs() {
+        this.currentFloor--;
+        this.setGameObjects();
         worldAnimation.translate(0, pixelSize * (this.houseTileHeight))
     }
 
@@ -542,19 +557,9 @@ class Interior extends gameObject {
 
 class Door extends gameObject {
     constructor(id, layerElement, tile_x, tile_y, left, type, bottom = pixelSize, width = pixelSize, height = 2 * pixelSize, doorImagePath = "assets/interior_door_32x4_2_3.png") {
-        super(id, left, bottom, width, height, doorImagePath, -tile_x * pixelSize, -tile_y * pixelSize, null);
-        this.layerElement = layerElement;
+        super(id, left, bottom, width, height, doorImagePath, -tile_x * pixelSize, -tile_y * pixelSize, layerElement);
         this.type = type; //[0: outside, 1: upstairs, 2:downstairs]
         this.initialize();
-    }
-    initialize() {
-        var objectElement = document.createElement("div");
-        objectElement.id = this.id;
-        if (this.layerElement) {
-            this.layerElement.appendChild(objectElement);
-        }
-        this.element = document.getElementById(this.id);
-        this.element.style.position = 'absolute';
     }
     interact() {
         switch (this.type) {
@@ -563,11 +568,11 @@ class Door extends gameObject {
                 break;
             case 1:
                 world.goUpstairs();
-                player.setPosition(this.left, this.bottom + world.houseTileHeight * pixelSize);
+                player.setLayerElement(document.getElementById("floor"+world.currentFloor+"player"))
                 break;
             case 2:
                 world.goDownstairs();
-                player.setPosition(this.left, this.bottom - world.houseTileHeight * pixelSize);
+                player.setLayerElement(document.getElementById("floor"+world.currentFloor+"player"))
                 break;
             default:
                 console.log("door type is unknown");
